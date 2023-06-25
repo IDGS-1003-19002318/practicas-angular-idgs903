@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-evenly">
+  <div class="col-">
+    <h1>Calcular resistencias</h1>
+    <!-- {{bandas | json}} -->
+    <form method="post" class="form-group">
+      <label for="banda1" class="form-label">Banda 1</label>
+      <select class="form-control" name="banda1" required [(ngModel)]="resistencia.banda1">
+        <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
+        </option>
+      </select>
+      <label class="form-label" for="banda2">Banda 2</label>
+      <select class="form-control" name="banda2" required [(ngModel)]="resistencia.banda2">
+        <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
+        </option>
+      </select>
+      <label class="form-label" for="banda3">Banda 3</label>
+      <select class="form-control" name="banda3" required [(ngModel)]="resistencia.banda3">
+        <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
+        </option>
+      </select>
+      <div class="container row">
+        <label class="form-label" for="tolerancia">Tolerancia</label>
+        <div class="form-group">
+          <input type="radio" name="tolerancia" value="1" [(ngModel)]="resistencia.tolerancia" />Plateado 5%
+          <input type="radio" name="tolerancia" value="2" [(ngModel)]="resistencia.tolerancia" />Dorado 10%
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3" (click)="calcularResistencia()">
+        <i class="bi bi-calculator-fill"></i> Calcular
+      </button>
+    </form>
+    <div class="table-responsive">
+      <table class="table table-striped-columns">
+        <thead>
+          <tr>
+            <th>Banda 1</th>
+            <th>Banda 2</th>
+            <th>Banda 3</th>
+            <th>Tolerancia</th>
+            <th>Valor</th>
+            <th>Minimo</th>
+            <th>Maximo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td [ngStyle]="{'background': bandas[resistencia.banda1].hex}">{{bandas[resistencia.banda1].nombre}}</td>
+            <td [ngStyle]="{'background': bandas[resistencia.banda2].hex}">{{bandas[resistencia.banda2].nombre}}</td>
+            <td [ngStyle]="{'background': bandas[resistencia.banda3].hex}">{{bandas[resistencia.banda3].nombre}}</td>
+            <td *ngIf="resistencia.tolerancia == 0">Sin color</td>
+            <td style="background: silver;" *ngIf="resistencia.tolerancia == 1">Plateado</td>
+            <td style="background: goldenrod;" *ngIf="resistencia.tolerancia == 2">Dorado</td>
+            <td>{{resistencia.valor}}</td>
+            <td>{{resistencia.valorMinimo}}</td>
+            <td>{{resistencia.valorMaximo}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-">
+    <img src="assets/img/resistors.png" alt="resistencias" class="img-fluid" [width]="500" />
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<!-- <p>cinepolis works</p> -->
+<div class="mt-3 mb-3 container">
+  <h2>Cinepolis</h2>
+  <form class="form-group form-horizontal border bg-secondary-subtle p-3" method="post" (ngSubmit)="calcularPrecio()">
+    <div class="col d-flex justify-content-center mb-3">
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput type="text" name="nombre" [(ngModel)]="nombre" />
+      </mat-form-field>
+    </div>
+    <div class="col d-flex justify-content-center mb-3">
+      <mat-form-field>
+        <mat-label>Cantidad Compradores</mat-label>
+        <input matInput type="number" name="cantidadC" id="cantidadC" [(ngModel)]="compradores" />
+      </mat-form-field>
+    </div>
+    <div class="mb-3 form-check flex">
+      <div class="col d-flex justify-content-center">
+        <mat-checkbox name="tarjeta" id="tarjeta" [(ngModel)]="tarjeta"></mat-checkbox>
+      </div>
+      <div class="col d-flex justify-content-center">
+        <label class="form-check-label" for="tarjeta">Tarjeta Cineco</label>
+      </div>
+    </div>
+    <div class="col d-flex justify-content-center mb-3">
+      <mat-form-field>
+        <mat-label>Cantidad de boletas</mat-label>
+        <input matInput type="number" name="cantidadB" id="cantidadB" [(ngModel)]="boletos" />
+      </mat-form-field>
+    </div>
+    <br />
+    <div class="col d-flex justify-content-center">
+      <button mat-raised-button color="primary">Procesar</button>
+    </div>
+  </form>
+</div>
+
+<div class="container" *ngIf="mensaje.length > 0">
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>¡Atención!</strong> No se puede procesar la compra debido a {{mensaje}} - <strong>Verifique los
+      datos</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+</div>
+
+<div class="container" *ngIf="total">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <h5 class="card-header">Resultado</h5>
+        <div class="card-body">
+          <h5 class="card-title">Total a pagar</h5>
+          <p class="card-text">${{total | currency : 'MX'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

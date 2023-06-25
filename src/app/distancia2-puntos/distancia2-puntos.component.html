@@ -1,0 +1,53 @@
+<div class="container mt-3">
+  <h2>Distancia entre dos puntos</h2>
+  <hr />
+  <div class="row">
+    <form [formGroup]="distanciaForm" method="post" (ngSubmit)="calcularDistancia()" class="form-horizontal col-6">
+      <div class="row mt-3" formGroupName="punto1">
+        <h3>Punto 1</h3>
+        <div class="form-group col-6">
+          <label for="x1" class="control-label col-md-2">X1</label>
+          <div class="col-md-10">
+            <input type="number" class="form-control" id="x1" class="form-control" formControlName="x" />
+          </div>
+        </div>
+        <div class="form-group col-6">
+          <label for="y1" class="control-label col-md-2">Y1</label>
+          <div class="col-md-10">
+            <input type="number" class="form-control" id="y1" class="form-control" formControlName="y" />
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3" formGroupName="punto2">
+        <h3>Punto 2</h3>
+        <div class="form-group col-6">
+          <label for="x2" class="control-label col-md-2">X2</label>
+          <div class="col-md-10">
+            <input type="number" class="form-control" id="x2" class="form-control" formControlName="x" />
+          </div>
+        </div>
+        <div class="form-group col-6">
+          <label for="y2" class="control-label col-md-2">Y2</label>
+          <div class="col-md-10">
+            <input type="number" class="form-control" id="y2" class="form-control" formControlName="y" />
+          </div>
+        </div>
+        <br />
+        <div class="form-group mt-3">
+          <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Calcular" class="btn btn-outline-primary" />
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="col-6" *ngIf="distancia">
+      <h3>Resultado</h3>
+      <div class="alert alert-success" *ngIf="distanciaForm.valid">
+        <p>La distancia entre los puntos es: {{ distancia }}</p>
+      </div>
+      <div class="alert alert-danger" *ngIf="distanciaForm.invalid">
+        <p>Los datos ingresados no son válidos</p>
+      </div>
+    </div>
+  </div>
+</div>
