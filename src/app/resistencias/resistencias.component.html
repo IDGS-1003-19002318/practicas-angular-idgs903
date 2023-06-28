@@ -4,28 +4,31 @@
     <!-- {{bandas | json}} -->
     <form method="post" class="form-group">
       <label for="banda1" class="form-label">Banda 1</label>
-      <select class="form-control" name="banda1" required [(ngModel)]="resistencia.banda1">
+      <select class="form-control" name="banda1" required [(ngModel)]="resistencia.banda1"
+        [ngStyle]="{'background': bandas[resistencia.banda1].hex}">
         <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
         </option>
       </select>
       <label class="form-label" for="banda2">Banda 2</label>
-      <select class="form-control" name="banda2" required [(ngModel)]="resistencia.banda2">
+      <select class="form-control" name="banda2" required [(ngModel)]="resistencia.banda2"
+        [ngStyle]="{'background': bandas[resistencia.banda2].hex}">
         <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
         </option>
       </select>
       <label class="form-label" for="banda3">Banda 3</label>
-      <select class="form-control" name="banda3" required [(ngModel)]="resistencia.banda3">
+      <select class="form-control" name="banda3" required [(ngModel)]="resistencia.banda3"
+        [ngStyle]="{'background': bandas[resistencia.banda3].hex}">
         <option *ngFor="let banda of bandas" [value]="banda.id" [ngStyle]="{'color':banda.hex}">{{banda.nombre}}
         </option>
       </select>
-      <div class="container row">
+      <div class="container row my-3">
         <label class="form-label" for="tolerancia">Tolerancia</label>
         <div class="form-group">
           <input type="radio" name="tolerancia" value="1" [(ngModel)]="resistencia.tolerancia" />Plateado 5%
           <input type="radio" name="tolerancia" value="2" [(ngModel)]="resistencia.tolerancia" />Dorado 10%
         </div>
       </div>
-      <button type="submit" class="btn btn-primary mt-3" (click)="calcularResistencia()">
+      <button type="submit" class="btn btn-primary my-3" (click)="calcularResistencia()">
         <i class="bi bi-calculator-fill"></i> Calcular
       </button>
     </form>

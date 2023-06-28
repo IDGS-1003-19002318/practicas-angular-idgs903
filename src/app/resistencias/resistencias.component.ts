@@ -20,17 +20,16 @@ export class ResistenciasComponent implements OnInit {
   };
 
   bandas: any = [
-    // { color: "Seleccione una banda", valor: -1, hex: "#FFFFFF" },
-    { nombre: "Negro", id: 0, hex: "#000000" },
-    { nombre: "brown", id: 1, hex: "#8B4513" },
-    { nombre: "red", id: 2, hex: "#FF0000" },
-    { nombre: "orange", id: 3, hex: "#FFA500" },
-    { nombre: "yellow", id: 4, hex: "#FFFF00" },
-    { nombre: "green", id: 5, hex: "#008000" },
-    { nombre: "blue", id: 6, hex: "#0000FF" },
-    { nombre: "violet", id: 7, hex: "#EE82EE" },
-    { nombre: "gray", id: 8, hex: "#808080" },
-    { nombre: "white", id: 9, hex: "#FFFFFF" },
+    { id: 0, nombre: 'Negro', hex: '#000000', multiplicador: 1 },
+    { id: 1, nombre: 'Cafe', hex: '#8B4513', multiplicador: 10 },
+    { id: 2, nombre: 'Rojo', hex: '#FF0000', multiplicador: 100 },
+    { id: 3, nombre: 'Naranja', hex: '#FFA500', multiplicador: 1000 },
+    { id: 4, nombre: 'Amarillo', hex: '#FFFF00', multiplicador: 10000 },
+    { id: 5, nombre: 'Verde', hex: '#008000', multiplicador: 100000 },
+    { id: 6, nombre: 'Azul', hex: '#0000FF', multiplicador: 1000000 },
+    { id: 7, nombre: 'Violeta', hex: '#EE82EE', multiplicador: 10000000 },
+    { id: 8, nombre: 'Gris', hex: '#808080', multiplicador: 100000000 },
+    { id: 9, nombre: 'Blanco', hex: '#FFFFFF', multiplicador: 1000000000 },
   ];
 
   constructor() { }
@@ -39,7 +38,7 @@ export class ResistenciasComponent implements OnInit {
   }
 
   calcularResistencia() {
-    this.resistencia.valor = this.resistencia.banda1 * 10 + this.resistencia.banda2 * 10 ** this.resistencia.banda3;
+    this.resistencia.valor = parseInt(this.resistencia.banda1.toString() + this.resistencia.banda2.toString()) * this.bandas[this.resistencia.banda3].multiplicador;
     if (this.resistencia.tolerancia == 1) {
       this.resistencia.valorMinimo = this.resistencia.valor - (this.resistencia.valor * 0.05);
       this.resistencia.valorMaximo = this.resistencia.valor + (this.resistencia.valor * 0.05);
