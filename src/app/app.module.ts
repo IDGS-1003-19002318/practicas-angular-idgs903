@@ -15,10 +15,12 @@ registerLocaleData(localeFr);
 // import { ResistenciasModule } from './resistencias/resistencias.module';
 
 import { AppComponent } from './app.component';
+import { MenuComponent } from './shared/menu/menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
