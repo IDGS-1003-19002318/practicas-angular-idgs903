@@ -5,6 +5,7 @@ const routes: Routes = [
   { path: 'resistencias', loadChildren: () => import('./resistencias/resistencias.module').then(m => m.ResistenciasModule) },
   { path: 'distancias', loadChildren: () => import('./distancia2-puntos/distancia2-puntos.module').then(m => m.Distancia2PuntosModule) },
   { path: 'cinepolis', loadChildren: () => import('./cinepolis/cinepolis.module').then(m => m.CinepolisModule) },
+  { path: 'pizzeria', loadChildren: () => import('./pizzeria/pizzeria.module').then(m => m.PizzeriaModule) },
   { path: '', redirectTo: 'resistencias', pathMatch: 'full' },
   { path: '**', redirectTo: 'resistencias', pathMatch: 'full' }
 ];
