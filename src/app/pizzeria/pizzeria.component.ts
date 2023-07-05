@@ -1,18 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormBuilder,
+  FormArray,
+} from '@angular/forms';
+
 import { IIngrediente } from './models/Ingrediente';
-import { ITamano } from './models/Tamano';
 import { IPedido } from './models/Pedido';
+import { ITamano } from './models/Tamano';
 
 @Component({
   selector: 'app-pizzeria',
   templateUrl: './pizzeria.component.html',
-  styleUrls: ['./pizzeria.component.css']
+  styleUrls: ['./pizzeria.component.css'],
 })
 export class PizzeriaComponent implements OnInit {
+  pedidoForm!: FormGroup;
+  ingredientesForm!: FormGroup;
 
   pedidos: IPedido[] = [];
-  detalles: any[] = [];
-  total = 0;
+  compra: any = [];
+  total: number = 0;
   finalizado: boolean = false;
 
   pedido: IPedido = {
@@ -23,7 +33,7 @@ export class PizzeriaComponent implements OnInit {
     telefono: '',
     ingredientes: [],
     tamano: 0,
-    cantidad: 0
+    cantidad: 0,
   };
 
   ingredientes: IIngrediente[] = [
@@ -38,83 +48,86 @@ export class PizzeriaComponent implements OnInit {
     { id: 3, nombre: 'Grande', precio: 120 },
   ];
 
-  constructor() { }
+  constructor(private fb: FormBuilder) {
+    this.pedidoForm = this.fb.group({
+      nombre: ['', Validators.required],
+      direccion: ['', Validators.required],
+      telefono: ['', Validators.required],
+      tamano: ['', Validators.required],
+      cantidad: ['', Validators.required],
+      ingredientes: (this.ingredientesForm = this.fb.group({})),
+    });
+
+    this.ingredientes.forEach((ingrediente) => {
+      this.ingredientesForm.addControl(
+        ingrediente.nombre,
+        new FormControl(false)
+      );
+    });
+  }
 
   ngOnInit() {
+    localStorage.clear();
   }
 
-  agregarPedido() {
-    this.pedido.precio = this.pedido.cantidad * (this.tamanos[this.pedido.tamano].precio + this.getTotalIngredientes(this.pedido));
-    isNaN(this.pedido.precio) ? this.pedido.precio = 0 : this.pedido.precio = this.pedido.precio;
-    this.pedidos.push(this.pedido);
+  onSubmit() {
+    let { nombre, direccion, telefono, tamano, cantidad, ingredientes } =
+      this.pedidoForm.value;
     this.pedido = {
-      id: 1,
-      nombre: '',
-      precio: 0,
-      direccion: '',
-      telefono: '',
-      ingredientes: [],
-      tamano: 0,
-      cantidad: 0
+      id: this.pedidos.length + 1,
+      nombre,
+      precio: this.calcularPrecio(ingredientes, tamano, cantidad),
+      direccion,
+      telefono,
+      ingredientes,
+      tamano,
+      cantidad,
     };
+    this.pedidos.push(this.pedido);
+    this.pedidoForm.reset();
+    this.ingredientesForm.reset();
   }
 
-  getTotalIngredientes(pedido: IPedido) {
-    let total = 0;
-    pedido.ingredientes.forEach((ingrediente, index) => {
-      if (ingrediente) {
-        total += this.ingredientes[index - 1].precio;
+  calcularPrecio(ingredientes: any, tamano: any, cantidad: any) {
+    let subtotal = 0;
+    for (const ingrediente in ingredientes) {
+      if (ingredientes[ingrediente]) {
+        this.ingredientes.forEach((ing) => {
+          if (ing.nombre === ingrediente) {
+            subtotal += ing.precio;
+          }
+        });
       }
-    });
-    // console.log(`Total ingredientes : ${total}`);
-    return total;
-  }
-
-  getIngredientes(pedido: IPedido) {
-    let ingredientes = '';
-    pedido.ingredientes.forEach((ingrediente, index) => {
-      if (ingrediente) {
-        ingredientes += this.ingredientes[index - 1].nombre + ', ';
-      }
-    });
-    // console.log(`Ingredientes : ${ingredientes}`);
-    return ingredientes;
-  }
-
-  terminarPedido() {
-    localStorage.setItem('pedidos', JSON.stringify(this.pedidos));
-    this.pedidos = [];
-    this.mostrarDetalleCompra();
-    this.finalizado = true;
-    localStorage.removeItem('pedidos');
-  }
-
-  // mostrarDetalleCompra() {
-  //   let pedidos = localStorage.getItem('pedidos')!;
-  //   if (pedidos === null) {
-  //     pedidos = '[]';
-  //   }
-  //   let pedidosJSON = JSON.parse(pedidos);
-  //   let total = 0;
-  //   pedidosJSON.forEach((pedido: IPedido) => {
-  //     total += pedido.precio;
-  //   });
-  //   this.detalles = pedidosJSON;
-  // }
-
-  mostrarDetalleCompra() {
-    let pedidos = localStorage.getItem('pedidos')!;
-    if (pedidos === null) {
-      pedidos = '[]';
     }
-    let pedidosJSON = JSON.parse(pedidos) as IPedido[];
-    pedidosJSON.forEach((pedido: IPedido) => {
-      this.total += pedido.precio;
+    this.tamanos.forEach((tam) => {
+      if (tam.id === tamano) {
+        subtotal += tam.precio;
+      }
     });
-    this.detalles = pedidosJSON;
-    console.log('Detalles de pedidos:', this.detalles);
-    console.log('Total:', this.total);
+    return subtotal * cantidad;
   }
 
+  finalizar() {
+    let compra = JSON.stringify(this.pedidos);
+    localStorage.setItem('compra', compra);
+    this.detalleCompra();
+    console.log(this.compra);
+    console.log(this.total);
+    this.finalizado = true;
+  }
 
+  detalleCompra() {
+    let compra = localStorage.getItem('compra');
+    let listCompra: any = [];
+    let total = 0;
+    let compraJSON = JSON.parse(compra!);
+    // console.log(compraJSON);
+    compraJSON.forEach((pedido: IPedido) => {
+      let { id, nombre, precio } = pedido;
+      total += precio;
+      listCompra.push({ id, nombre, precio });
+    });
+    this.compra = listCompra;
+    this.total = total;
+  }
 }

@@ -7,7 +7,7 @@ export interface IPedido {
   precio: number;
   direccion: string;
   telefono: string;
-  ingredientes: IIngrediente[];
+  ingredientes: boolean[];
   tamano: ITamano['id'];
   cantidad: number;
 }

@@ -5,10 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PizzeriaRoutingModule } from './pizzeria-routing.module';
 import { PizzeriaComponent } from './pizzeria.component';
+import { IngredientesPipe } from './ingredientes.pipe';
 
 @NgModule({
   declarations: [
-    PizzeriaComponent
+    PizzeriaComponent,
+    IngredientesPipe
   ],
   imports: [
     CommonModule,
