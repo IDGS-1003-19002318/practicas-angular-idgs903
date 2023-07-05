@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { PizzeriaRoutingModule } from './pizzeria-routing.module';
 import { PizzeriaComponent } from './pizzeria.component';
 
@@ -10,7 +12,10 @@ import { PizzeriaComponent } from './pizzeria.component';
   ],
   imports: [
     CommonModule,
-    PizzeriaRoutingModule
+    PizzeriaRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
+
   ],
   exports: [
     PizzeriaComponent
