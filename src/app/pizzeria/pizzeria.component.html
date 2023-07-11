@@ -10,86 +10,46 @@
         <div class="row">
           <div class="mb-3 col-4">
             <label class="form-label">Nombre</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="nombre"
-              name="nombre"
-              placeholder="Nombre"
-            />
+            <input type="text" class="form-control" formControlName="nombre" name="nombre" placeholder="Nombre" />
           </div>
           <div class="mb-3 col-4">
             <label class="form-label">Dirección</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="direccion"
-              name="direccion"
-              placeholder="Dirección"
-            />
+            <input type="text" class="form-control" formControlName="direccion" name="direccion"
+              placeholder="Dirección" />
           </div>
           <div class="mb-3 col-4">
             <label class="form-label">Teléfono</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="telefono"
-              name="telefono"
-              placeholder="Teléfono"
-              maxlength="10"
-            />
+            <input type="text" class="form-control" formControlName="telefono" name="telefono" placeholder="Teléfono"
+              maxlength="10" />
           </div>
-          <div class="mb-3 col-4">
-            <label class="form-label">Tamano de Pizza</label>
-            <div class="mb-3 form-check" *ngFor="let tamano of tamanos">
-              <input
-                type="radio"
-                class="form-check-input"
-                id="exampleCheck"
-                formControlName="tamano"
-                [value]="tamano.id"
-                name="tamano"
-              />
-              <label class="form-check-label" for="exampleCheck1"
-                >{{ tamano.nombre }}
-                {{
+          <div formGroupName="venta" class="col-12 row">
+            <div class="mb-3 col-4">
+              <label class="form-label">Tamano de Pizza</label>
+              <div class="mb-3 form-check" *ngFor="let tamano of tamanos">
+                <input type="radio" class="form-check-input" id="exampleCheck" formControlName="tamano"
+                  [value]="tamano.id" name="tamano" />
+                <label class="form-check-label" for="exampleCheck1">{{ tamano.nombre }}
+                  {{
                   tamano.precio | currency : "MXN" : "symbol" : "1.2-2"
-                }}</label
-              >
+                  }}</label>
+              </div>
             </div>
-          </div>
-          <div class="mb-3 col-4">
-            <label class="form-label">Ingredientes</label>
-            <div
-              class="mb-3 form-check"
-              *ngFor="let ingrediente of ingredientes"
-              formGroupName="ingredientes"
-            >
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck"
-                [value]="ingrediente.id"
-                name="ingredientes"
-                formControlName="{{ ingrediente.nombre }}"
-              />
-              <label class="form-check-label" for="exampleCheck1"
-                >{{ ingrediente.nombre }}
-                {{
+            <div class="mb-3 col-4">
+              <label class="form-label">Ingredientes</label>
+              <div class="mb-3 form-check" *ngFor="let ingrediente of ingredientes" formGroupName="ingredientes">
+                <input type="checkbox" class="form-check-input" id="exampleCheck" [value]="ingrediente.id"
+                  name="ingredientes" formControlName="{{ ingrediente.nombre }}" />
+                <label class="form-check-label" for="exampleCheck1">{{ ingrediente.nombre }}
+                  {{
                   ingrediente.precio | currency : "MXN" : "symbol" : "1.2-2"
-                }}</label
-              >
+                  }}</label>
+              </div>
             </div>
-          </div>
-          <div class="mb-3 col-4">
-            <label class="form-label">Num. de Pizzas</label>
-            <input
-              type="number"
-              class="form-control"
-              formControlName="cantidad"
-              name="cantidad"
-              placeholder="Cantidad"
-            />
+            <div class="mb-3 col-4">
+              <label class="form-label">Num. de Pizzas</label>
+              <input type="number" class="form-control" formControlName="cantidad" name="cantidad"
+                placeholder="Cantidad" />
+            </div>
           </div>
         </div>
         <input type="submit" class="btn btn-primary" value="Agregar" />
@@ -106,31 +66,22 @@
               <th scope="col">SubTotal</th>
             </tr>
           </thead>
-          <tbody *ngFor="let pedido of pedidos">
+          <tbody *ngFor="let pedido of ventas">
             <tr>
-              <td>{{ tamanos[pedido.tamano - 1].nombre }}</td>
+              <th scope="row">{{ tamanos[pedido.tamano - 1].nombre }}</th>
               <td>
-                {{
-                  pedido.ingredientes | ingredientesPipe : pedido.ingredientes
-                }}
+                {{pedido.ingredientes | ingredientesPipe:pedido.ingredientes}}
               </td>
               <td>{{ pedido.cantidad }}</td>
-              <td>
-                {{ pedido.precio | currency : "MXN" : "symbol" : "1.2-2" }}
-              </td>
+              <td>{{ pedido.subtotal | currency : "MXN" : "symbol" : "1.2-2" }}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <input
-      type="button"
-      class="btn btn-primary my-5"
-      value="Terminar"
-      (click)="finalizar()"
-    />
+    <input type="button" class="btn btn-primary my-5" value="Terminar" (click)="terminar()" />
     <div class="d-flex justify-content-center">
-      <div class="col-6 table-responsive" *ngIf="finalizado">
+      <div class="col-6 table-responsive">
         <table class="table table-striped">
           <thead>
             <tr>
@@ -140,17 +91,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let detalle of compra">
-              <td>{{ detalle.id }}</td>
+            <tr *ngFor="let detalle of tPedidos; let i = index">
+              <th scope="row">{{ i + 1 }}</th>
               <td>{{ detalle.nombre }}</td>
-              <td>
-                {{ detalle.precio | currency : "MXN" : "symbol" : "1.2-2" }}
-              </td>
+              <td>{{ detalle.total | currency : "MXN" : "symbol" : "1.2-2" }}</td>
             </tr>
           </tbody>
         </table>
         <h3 class="text-end">
-          Total: {{ total | currency : "MXN" : "symbol" : "1.2-2" }}
+          Total: {{ totalFinal | currency : "MXN" : "symbol" : "1.2-2" }}
         </h3>
       </div>
     </div>

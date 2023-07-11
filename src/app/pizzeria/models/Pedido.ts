@@ -11,3 +11,19 @@ export interface IPedido {
   tamano: ITamano['id'];
   cantidad: number;
 }
+
+export interface IPedidoForm {
+  nombre: string;
+  total: number;
+  direccion: string;
+  telefono: string;
+  venta: IVenta[];
+}
+
+export interface IVenta {
+  id: number;
+  subtotal: number;
+  ingredientes: boolean[];
+  tamano: ITamano['id'];
+  cantidad: number;
+}

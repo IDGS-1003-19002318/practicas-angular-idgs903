@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 
 import { IIngrediente } from './models/Ingrediente';
-import { IPedido } from './models/Pedido';
+import { IPedido, IPedidoForm, IVenta } from './models/Pedido';
 import { ITamano } from './models/Tamano';
 
 @Component({
@@ -19,14 +19,21 @@ import { ITamano } from './models/Tamano';
 export class PizzeriaComponent implements OnInit {
   pedidoForm!: FormGroup;
   ingredientesForm!: FormGroup;
+  ventaForm!: FormGroup;
+  nombre: string = '';
+  direccion: string = '';
+  telefono: string = '';
 
   pedidos: IPedido[] = [];
+  tPedidos: IPedidoForm[] = [];
   compra: any = [];
   total: number = 0;
+  totalFinal: number = 0;
   finalizado: boolean = false;
+  ventas: IVenta[] = [];
 
   pedido: IPedido = {
-    id: 1,
+    id: 0,
     nombre: '',
     precio: 0,
     direccion: '',
@@ -34,6 +41,22 @@ export class PizzeriaComponent implements OnInit {
     ingredientes: [],
     tamano: 0,
     cantidad: 0,
+  };
+
+  venta: IVenta = {
+    id: 0,
+    subtotal: 0,
+    ingredientes: [],
+    tamano: 0,
+    cantidad: 0,
+  }
+
+  pedidoFormulario: IPedidoForm = {
+    nombre: '',
+    total: 0,
+    direccion: '',
+    telefono: '',
+    venta: [],
   };
 
   ingredientes: IIngrediente[] = [
@@ -53,9 +76,11 @@ export class PizzeriaComponent implements OnInit {
       nombre: ['', Validators.required],
       direccion: ['', Validators.required],
       telefono: ['', Validators.required],
-      tamano: ['', Validators.required],
-      cantidad: ['', Validators.required],
-      ingredientes: (this.ingredientesForm = this.fb.group({})),
+      venta: this.ventaForm = this.fb.group({
+        tamano: ['', Validators.required],
+        cantidad: ['', Validators.required],
+        ingredientes: (this.ingredientesForm = this.fb.group({})),
+      }),
     });
 
     this.ingredientes.forEach((ingrediente) => {
@@ -71,22 +96,62 @@ export class PizzeriaComponent implements OnInit {
   }
 
   onSubmit() {
-    let { nombre, direccion, telefono, tamano, cantidad, ingredientes } =
-      this.pedidoForm.value;
-    this.pedido = {
-      id: this.pedidos.length + 1,
-      nombre,
-      precio: this.calcularPrecio(ingredientes, tamano, cantidad),
-      direccion,
-      telefono,
-      ingredientes,
-      tamano,
-      cantidad,
-    };
-    this.pedidos.push(this.pedido);
-    this.pedidoForm.reset();
-    this.ingredientesForm.reset();
+    let { tamano, cantidad, ingredientes } = this.ventaForm.value;
+    let { nombre, direccion, telefono } = this.pedidoForm.value;
+    if (nombre != null || direccion != null || telefono != null) {
+      this.nombre = nombre.trim();
+      this.direccion = direccion.trim();
+      this.telefono = telefono.trim();
+    }
+    this.ventas.push({
+      id: this.ventas.length + 1,
+      subtotal: this.calcularPrecio(ingredientes, tamano, cantidad),
+      ingredientes: ingredientes,
+      tamano: tamano,
+      cantidad: cantidad,
+    });
+
+    // console.log(this.ventas);
+    this.ventaForm.reset();
+    this.pedidoForm.controls['nombre'].disable();
+    this.pedidoForm.controls['direccion'].disable();
+    this.pedidoForm.controls['telefono'].disable();
   }
+
+  terminar(): void {
+    let total = 0;
+    this.ventas.map((venta) => {
+      total += venta.subtotal;
+    });
+    this.pedidoFormulario = {
+      nombre: this.nombre,
+      total: total,
+      direccion: this.direccion,
+      telefono: this.telefono,
+      venta: this.ventas,
+    };
+    // console.log(this.pedidoFormulario);
+    this.tPedidos.push(this.pedidoFormulario);
+    console.log(this.tPedidos);
+    this.pedidoForm.reset();
+    this.pedidoForm.controls['nombre'].enable();
+    this.pedidoForm.controls['direccion'].enable();
+    this.pedidoForm.controls['telefono'].enable();
+    this.ventas = [];
+    this.nombre = '';
+    this.direccion = '';
+    this.telefono = '';
+    this.totalFinal = this.obtenerTotal();
+  }
+
+  obtenerTotal(): number {
+    let total = 0;
+    this.tPedidos.map((pedido) => {
+      total += pedido.total;
+    });
+    return total;
+  }
+
 
   calcularPrecio(ingredientes: any, tamano: any, cantidad: any) {
     let subtotal = 0;
@@ -107,27 +172,4 @@ export class PizzeriaComponent implements OnInit {
     return subtotal * cantidad;
   }
 
-  finalizar() {
-    let compra = JSON.stringify(this.pedidos);
-    localStorage.setItem('compra', compra);
-    this.detalleCompra();
-    console.log(this.compra);
-    console.log(this.total);
-    this.finalizado = true;
-  }
-
-  detalleCompra() {
-    let compra = localStorage.getItem('compra');
-    let listCompra: any = [];
-    let total = 0;
-    let compraJSON = JSON.parse(compra!);
-    // console.log(compraJSON);
-    compraJSON.forEach((pedido: IPedido) => {
-      let { id, nombre, precio } = pedido;
-      total += precio;
-      listCompra.push({ id, nombre, precio });
-    });
-    this.compra = listCompra;
-    this.total = total;
-  }
 }
